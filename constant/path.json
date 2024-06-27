@@ -1,0 +1,4 @@
+{
+  "characters": "/v1/public/characters",
+  "character": "/v1/public/characters/{id}"
+}
