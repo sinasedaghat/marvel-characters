@@ -1,0 +1,8 @@
+{
+  "characters": {
+    "list": "/v1/public/characters",
+    "details": "/v1/public/characters/{id}",
+    "comics": "/v1/public/characters/{id}/comics",
+    "series": "/v1/public/characters/{id}/series"
+  }
+}

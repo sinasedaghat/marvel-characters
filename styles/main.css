@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #3490dc;
+  --color-secondary: #ffed4a;
+  --custom-padding: 1rem;
+}
+
+/* @layer base {
+  h4 {
+    @apply text-2xl text-pink-500;
+  }
+} */
+
