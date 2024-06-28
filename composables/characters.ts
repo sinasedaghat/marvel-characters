@@ -1,10 +1,14 @@
 import type { TCharactersListResponse, TCharactersComicsResponse, TCharactersSeriesResponse } from '~/types/characters'
-import path from '~/constant/path.json'
 import charactersModels from '~/models/characters'
+import path from '~/constant/path.json'
+import pagination from '~/constant/item-per-page-pagination.json'
 
 export function useCharacters() {
   const appConfig = useAppConfig()
+  const { isDesktop } = useDevice();
+
   const { baseURL, apikey } = appConfig
+  const itemPerPage = isDesktop ? pagination.desktop.charecters : pagination.mobile.charecters
 
   const params: {[k: string]: number | string} = {
     ts: 1,
@@ -12,21 +16,21 @@ export function useCharacters() {
   }
   params.hash = privateHashCreator(params.ts, import.meta.env.VITE_PRIVATE_KEY, apikey)
 
-  const list = async () => {
+  const list = async (page: number) => {
     const { data, error, status } = await useFetch(`${baseURL}${path.characters.list}`, {
-      params,
+      params: { ...params, limit: itemPerPage, offset: ((page - 1) * itemPerPage) },
       transform: (response) => {
         return charactersModels.charactersList(response as TCharactersListResponse )
       }
     })
-    return { data, status }
+    const count = charactersModels.charactersCounte
+    return { data, status, count }
   }
 
   const details = async (identifier: string) => {
     const { data, error, status } = await useFetch(`${baseURL}${URLModifier(path.characters.details, '{id}', identifier)}`, {
       params,
       transform: (response) => {
-        // console.log('character details [response] ===>', response)
         return charactersModels.characterDetails(response as TCharactersListResponse)
       }
     })
@@ -37,7 +41,6 @@ export function useCharacters() {
     const { data, error, status } = await useFetch(`${baseURL}${URLModifier(path.characters.comics, '{id}', identifier)}`, {
       params,
       transform: (response) => {
-        // console.log('character comics [response] ===>', response)
         return charactersModels.characterComics(response as TCharactersComicsResponse)
       }
     })
@@ -48,25 +51,13 @@ export function useCharacters() {
     const { data, error, status } = await useFetch(`${baseURL}${URLModifier(path.characters.series, '{id}', identifier)}`, {
       params,
       transform: (response) => {
-        // console.log('character series [response] ===>', response)
         return charactersModels.characterSeries(response as TCharactersSeriesResponse)
       }
     })
     return { data, status }
   }
 
-
-
-
-
-
-  const logger = () => {
-    console.log('baseURL ====>', baseURL)
-    console.log('apiKey ====>', apikey)
-  }
-
   return {
-    logger,
     list,
     details,
     comics,

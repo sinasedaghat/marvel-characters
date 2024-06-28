@@ -1,65 +1,59 @@
 <script setup lang="ts">
 import type { PurgeCharacter } from '~/types/characters'
+import pagination from '~/constant/item-per-page-pagination.json'
+
   const characterRequest = useCharacters()
   const { fillDetails } = useCharacterStore()
+  const { isDesktop } = useDevice();
+  
+  const page: Ref<number> = ref(1)
+  const itemPerPage = isDesktop ? pagination.desktop.charecters : pagination.mobile.charecters
+  const totalCount: Ref<number> = ref(0)
 
-  const { data: list } = await characterRequest.list()
+  const list: Ref<PurgeCharacter[] | null> = ref(null)
 
+  const getCharacter = async (page: number) => {
+    list.value = null
+    const { data, count } = await characterRequest.list(page)
+    list.value = data.value
+    totalCount.value = count
+  }
 
   const seeDetails = async (character: PurgeCharacter) => {
     await fillDetails(character)
     await navigateTo({ name: 'character-id', params: { id: character.id } })
   }
-  // import { NuxtImg } from '#build/components';
 
-  // const { privateHashCreator } = use 
-  // privateHashCreator('1', '33bd0222620b5d14cb07bdb1ef074178c25db836', '74afbd58d2fe37555ad891f318eff3a2')
-  // const { isDesktop } = useDevice();
-  // // const { value } = useLocalStorage('test', 1);
-  // const value = ref(useLocalStorage('test', 1))
-  // console.log('value', value.value)
-  // console.log(isDesktop)
-  // value.value += 3
+  watch(
+    page,
+    (newValue) => {
+      getCharacter(toValue(newValue))
+    }
+  )
 
-
-
-
-
+  getCharacter(toValue(page))
 
 </script>
 
 <template>
-  <!-- <div class="bg-primary p-custom-padding">
-    <h1 class="text-secondary">Hello, Nuxt 3 with Tailwind CSS!</h1>
-    {{ privateHashCreator('1', '33bd0222620b5d14cb07bdb1ef074178c25db836', '74afbd58d2fe37555ad891f318eff3a2') }}
-    <br />
-    descktop ====> {{ isDesktop }}
-    <Icon name="gala:airplay" color="black" /> https://icones.js.org/
-  </div> -->
-
-
-
-
-
-
-
   <div>
-    <!-- {{ data }} -->
     <div class="flex-container">
       <div 
         v-for="character in list" 
         :key="character.id"
         @click="seeDetails(character)"
         >
-        <!-- @click="navigateTo({ name: 'character-id', params: { id: character.id } })" -->
         <NuxtImg
           :src="character.image"
           width="100px"
         />
         <b>{{ character.name }}</b>
-        {{ character.id }}
-        <!-- <p>{{ character.description }}</p> -->
       </div>
+    </div>
+
+    <div v-if="totalCount">
+      <button :class="{ 'disabled-pointer': !!!(page - 1) }" :disabled="!!!(page - 1)" @click="page -= 1">pre</button>
+      <button :class="{ 'disabled-pointer': ((totalCount / itemPerPage) - page) < 1 }" :disabled="((totalCount / itemPerPage) - page) < 1" @click="page += 1">next</button>
     </div>
   </div>
 </template>
@@ -78,5 +72,12 @@ import type { PurgeCharacter } from '~/types/characters'
   font-size: 30px;
 }
 
+.disabled-pointer {
+  cursor: not-allowed;
+}
 
+button{
+  border: 1px solid darkblue;
+  margin: 10px 30px;
+}
 </style>

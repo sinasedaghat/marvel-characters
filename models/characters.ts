@@ -5,11 +5,22 @@ import type {
 } from '~/types/characters'
 
 class charactersModels {
+  private _charactersCounte = 0
+
+  get charactersCounte() {
+    return this._charactersCounte;
+  }
+
+  set charactersCounte(count: number) {
+    this._charactersCounte = count;
+  }
+
   private _imageURL(thumbnail: Record<"path" | "extension", string>): string {
     return `${thumbnail.path}.${thumbnail.extension}`
   }
 
   charactersList(resp: TCharactersListResponse): Array<PurgeCharacter> {
+    this.charactersCounte = resp.data.total
     const purge: Array<PurgeCharacter> = 
       resp.data.results.reduce((character: Array<PurgeCharacter>, item: TCharactersDataResult) => {
         return [

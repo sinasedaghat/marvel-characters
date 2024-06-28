@@ -1,0 +1,12 @@
+{
+  "mobile": {
+    "charecters": 6,
+    "comics": 4,
+    "series": 4
+  },
+  "desktop": {
+    "charecters": 12,
+    "comics": 8,
+    "series": 8
+  }
+}
