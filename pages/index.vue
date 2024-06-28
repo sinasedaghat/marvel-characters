@@ -1,6 +1,15 @@
 <script setup lang="ts">
-  const useCha = useCharacters()
-  const { data } = await useCha.list()
+import type { PurgeCharacter } from '~/types/characters'
+  const characterRequest = useCharacters()
+  const { fillDetails } = useCharacterStore()
+
+  const { data: list } = await characterRequest.list()
+
+
+  const seeDetails = async (character: PurgeCharacter) => {
+    await fillDetails(character)
+    await navigateTo({ name: 'character-id', params: { id: character.id } })
+  }
   // import { NuxtImg } from '#build/components';
 
   // const { privateHashCreator } = use 
@@ -38,10 +47,11 @@
     <!-- {{ data }} -->
     <div class="flex-container">
       <div 
-        v-for="character in data" 
+        v-for="character in list" 
         :key="character.id"
-        @click="navigateTo({ name: 'character-id', params: { id: character.id } })"
-      >
+        @click="seeDetails(character)"
+        >
+        <!-- @click="navigateTo({ name: 'character-id', params: { id: character.id } })" -->
         <NuxtImg
           :src="character.image"
           width="100px"

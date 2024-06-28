@@ -1,4 +1,4 @@
-import type { CharactersListResponse } from '~/types/characters'
+import type { TCharactersListResponse, TCharactersComicsResponse, TCharactersSeriesResponse } from '~/types/characters'
 import path from '~/constant/path.json'
 import charactersModels from '~/models/characters'
 
@@ -13,28 +13,48 @@ export function useCharacters() {
   params.hash = privateHashCreator(params.ts, import.meta.env.VITE_PRIVATE_KEY, apikey)
 
   const list = async () => {
-    const { data, error, status } = await useFetch(`${baseURL}${path.characters}`, {
+    const { data, error, status } = await useFetch(`${baseURL}${path.characters.list}`, {
       params,
       transform: (response) => {
-        return charactersModels.charactersList(response as CharactersListResponse )
+        return charactersModels.charactersList(response as TCharactersListResponse )
       }
     })
     return { data, status }
   }
-
-
-
 
   const details = async (identifier: string) => {
-    const { data, error, status } = await useFetch(`${baseURL}${URLModifier(path.character, '{id}', identifier)}`, {
+    const { data, error, status } = await useFetch(`${baseURL}${URLModifier(path.characters.details, '{id}', identifier)}`, {
       params,
       transform: (response) => {
-        console.log('character details [response] ===>', response)
-        return 'ridi'
+        // console.log('character details [response] ===>', response)
+        return charactersModels.characterDetails(response as TCharactersListResponse)
       }
     })
     return { data, status }
   }
+
+  const comics = async (identifier: string) => {
+    const { data, error, status } = await useFetch(`${baseURL}${URLModifier(path.characters.comics, '{id}', identifier)}`, {
+      params,
+      transform: (response) => {
+        // console.log('character comics [response] ===>', response)
+        return charactersModels.characterComics(response as TCharactersComicsResponse)
+      }
+    })
+    return { data, status }
+  }
+
+  const series = async (identifier: string) => {
+    const { data, error, status } = await useFetch(`${baseURL}${URLModifier(path.characters.series, '{id}', identifier)}`, {
+      params,
+      transform: (response) => {
+        // console.log('character series [response] ===>', response)
+        return charactersModels.characterSeries(response as TCharactersSeriesResponse)
+      }
+    })
+    return { data, status }
+  }
+
 
 
 
@@ -48,6 +68,8 @@ export function useCharacters() {
   return {
     logger,
     list,
-    details
+    details,
+    comics,
+    series
   }
 }
