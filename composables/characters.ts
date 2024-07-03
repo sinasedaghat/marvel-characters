@@ -20,11 +20,10 @@ export function useCharacters() {
     const { data, error, status } = await useFetch(`${baseURL}${path.characters.list}`, {
       params: { ...params, limit: itemPerPage, offset: ((page - 1) * itemPerPage) },
       transform: (response) => {
-        return charactersModels.charactersList(response as TCharactersListResponse )
+        return charactersModels.charactersList(response as TCharactersListResponse)
       }
     })
-    const count = charactersModels.charactersCounte
-    return { data, status, count }
+    return { data, status }
   }
 
   const details = async (identifier: string) => {

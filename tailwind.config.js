@@ -9,8 +9,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: 'var(--color-primary)',
-        secondary: 'var(--color-secondary)',
+        // primary: 'var(--color-primary)',
+        // secondary: 'var(--color-secondary)',
+        background: 'var(--color-background)',
+        grey: 'var(--color-grey)'
       },
       fontFamily: {
         'nunito': ['nunito', 'sans-serif']

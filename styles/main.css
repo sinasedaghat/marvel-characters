@@ -3,14 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #3490dc;
-  --color-secondary: #ffed4a;
+  /* --color-primary: #3490dc;
+  --color-secondary: #ffed4a; */
+  --color-background: #2C2E30;
+  --color-grey: #404244;
   --custom-padding: 1rem;
 }
 
-/* @layer base {
-  h4 {
-    @apply text-2xl text-pink-500;
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: white;
+    max-width: 1920px;
+    margin: 0 auto;
   }
-} */
+  /* h4 {
+    @apply text-2xl text-pink-500;
+  } */
+}
 

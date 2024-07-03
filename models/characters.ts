@@ -19,7 +19,7 @@ class charactersModels {
     return `${thumbnail.path}.${thumbnail.extension}`
   }
 
-  charactersList(resp: TCharactersListResponse): Array<PurgeCharacter> {
+  charactersList(resp: TCharactersListResponse): {purge:Array<PurgeCharacter>, total: number} {
     this.charactersCounte = resp.data.total
     const purge: Array<PurgeCharacter> = 
       resp.data.results.reduce((character: Array<PurgeCharacter>, item: TCharactersDataResult) => {
@@ -35,7 +35,7 @@ class charactersModels {
           }
         ]
       }, [])
-    return purge
+    return {purge: purge, total: resp.data.total}
   }
 
   characterDetails(resp: TCharactersListResponse): PurgeCharacter {

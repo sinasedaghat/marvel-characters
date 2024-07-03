@@ -14,9 +14,9 @@ import pagination from '~/constant/item-per-page-pagination.json'
 
   const getCharacter = async (page: number) => {
     list.value = null
-    const { data, count } = await characterRequest.list(page)
-    list.value = data.value
-    totalCount.value = count
+    const { data } = await characterRequest.list(page)
+    list.value = data.value?.purge || []
+    totalCount.value = data.value?.total || 0
   }
 
   const seeDetails = async (character: PurgeCharacter) => {
@@ -27,51 +27,41 @@ import pagination from '~/constant/item-per-page-pagination.json'
   watch(
     page,
     (newValue) => {
+      console.log('watch page')
       getCharacter(toValue(newValue))
     }
   )
 
   getCharacter(toValue(page))
-
 </script>
 
 <template>
   <div>
-    <div class="flex-container">
-      <div 
+    <div class="grid gap-4 grid-cols-4 w-[100rem] mx-auto">
+      <div
         v-for="character in list" 
         :key="character.id"
+        class="border border-grey rounded-2xl p-4 hover:cursor-pointer"
         @click="seeDetails(character)"
-        >
-        <NuxtImg
-          :src="character.image"
-          width="100px"
+      >
+        <Card 
+          :image="character.image"
+          :name="character.name"
         />
-        <b>{{ character.name }}</b>
       </div>
     </div>
 
+    {{ totalCount }}
     <div v-if="totalCount">
       <button :class="{ 'disabled-pointer': !!!(page - 1) }" :disabled="!!!(page - 1)" @click="page -= 1">pre</button>
       <button :class="{ 'disabled-pointer': ((totalCount / itemPerPage) - page) < 1 }" :disabled="((totalCount / itemPerPage) - page) < 1" @click="page += 1">next</button>
     </div>
+
+
   </div>
 </template>
 
 <style>
-.flex-container {
-  display: flex;
-  flex-wrap: wrap;
-  background-color: DodgerBlue;
-}
-
-.flex-container > div {
-  background-color: #f1f1f1;
-  margin: 10px;
-  padding: 20px;
-  font-size: 30px;
-}
-
 .disabled-pointer {
   cursor: not-allowed;
 }

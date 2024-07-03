@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  ssr: false,
+  ssr: true,
 
   app: {
     head: {
@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@vueuse/nuxt",
     "@nuxtjs/tailwindcss", 
-    "@nuxt/image", 
+    "@nuxt/image",
     "@nuxt/icon",
     "@nuxtjs/device"
   ],
